@@ -29,7 +29,7 @@ void setup() {
   GPRS.print("AT+CMGF=1\r\n"); delay(1000);
   GPRS.print("AT+CNMI=2,2,0,0,0\r\n");
   delay(1000);
-  sendSMS("+6285858938951", "Halo, ini pesan dari GPS TRACKER");
+  sendSMS("+6285665577", "Halo, ini pesan dari GPS TRACKER");
   //t.every(60000,tulis, (void*)2);
 }
 
