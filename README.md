@@ -6,13 +6,17 @@ Proyek ini menggunakan **modul GPS dan GPRS (GSM)** secara terpisah untuk mengir
 
 Kode ini bekerja dengan membaca data dari modul **GPS** dan mengirimkan koordinat melalui **modul GPRS (GSM)** dalam bentuk link Google Maps. Saat perangkat menerima SMS dengan kata kunci **"LOKASI"**, maka akan membalas dengan tautan lokasi GPS terbaru.
 
+Selain mengirimkan lokasi melalui SMS, proyek ini juga memiliki fitur **panggilan suara**. Jika nomor yang terhubung dengan modul GSM melakukan panggilan ke perangkat ini, maka panggilan akan **otomatis diangkat pada dering ketiga**.
+
+Proyek ini masih berbasis SMS, tetapi jika ingin mengembangkan sistem dengan mengirim data ke **server atau internet**, bisa dilakukan update coding dengan menggunakan **basis data GPRS**.
+
 ## 🛠️ Hardware yang Digunakan
 
 - **Mikrokontroler**: Arduino (contoh: Arduino Uno, Nano, atau lainnya)
 - **Modul GPS**: Neo-6M atau kompatibel
 - **Modul GSM/GPRS**: SIM800L atau SIM900
 - **PCB Custom**: Koding ini dibuat untuk PCB khusus yang sudah dirancang agar sesuai dengan proyek ini
-- **Kartu SIM** dengan pulsa untuk mengirim SMS
+- **Kartu SIM** dengan pulsa untuk mengirim SMS dan melakukan panggilan
 
 ## 🖇️ **Koneksi Hardware** (Jika Menggunakan Arduino dengan Modul GPS & GSM Terpisah)
 
@@ -56,6 +60,7 @@ Sebelum meng-compile kode, pastikan kamu sudah menginstal library berikut di **A
    ```
 5. Nomor pengirim SMS akan disimpan sementara untuk membalas otomatis.
 6. Setelah mengirim SMS, perangkat menghapus pesan yang diterima agar memori tidak penuh.
+7. Jika ada **panggilan masuk**, perangkat akan **otomatis mengangkat pada dering ketiga**.
 
 ## 📌 Cara Menggunakan
 
@@ -64,6 +69,7 @@ Sebelum meng-compile kode, pastikan kamu sudah menginstal library berikut di **A
 3. **Upload kode ke Arduino** menggunakan Arduino IDE.
 4. **Kirim SMS berisi "LOKASI"** ke nomor yang ada di modul GSM.
 5. **Perangkat akan membalas dengan link lokasi** berdasarkan data dari modul GPS.
+6. **Lakukan panggilan ke nomor SIM pada modul GSM**, dan perangkat akan **mengangkat otomatis pada dering ketiga**.
 
 ## 🔥 Troubleshooting
 
