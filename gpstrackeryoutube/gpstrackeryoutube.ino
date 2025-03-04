@@ -1,83 +1,68 @@
 #include <SoftwareSerial.h>
 #include <TinyGPS++.h>
-SoftwareSerial GPRS(4, 5);
-SoftwareSerial GPS(2,3);
+
+// Deklarasi komunikasi serial untuk GPRS dan GPS
+SoftwareSerial GPRS(5, 4);
+SoftwareSerial GPS(3, 2);
 TinyGPSPlus G;
-#include <SPI.h>
-#include <SD.h>
-//#include "Timer.h"
-//Timer t;
-#define chipSelect 10
-String sementara="";
-String lati="";
-String longi="";
+
+// Variabel untuk menyimpan data sementara
+String sementara = "";
+String lati = "";
+String longi = "";
+
 void setup() {
-  delay(5000);
+  delay(5000); // Delay awal untuk memastikan perangkat siap
+  
+  // Memulai komunikasi serial dengan modul GPRS dan GPS
   GPRS.begin(9600);
   GPS.begin(9600);
   Serial.begin(9600);
-  if (!SD.begin(chipSelect)) {
-    Serial.println("Card failed, or not present");
-    digitalWrite(13,HIGH);
-    // don't do anything more:
-    return;
-  }  
+
   Serial.println("Lewat");
   delay(10);
+  
+  // Mengatur parameter GPRS
   GPRS.print("ATS0=3\r\n");
   delay(100);
-  GPRS.print("AT+CMGF=1\r\n"); delay(1000);
-  GPRS.print("AT+CNMI=2,2,0,0,0\r\n");
+  GPRS.print("AT+CMGF=1\r\n"); // Mengatur mode teks untuk SMS
   delay(1000);
-  sendSMS("+6285665577", "Halo, ini pesan dari GPS TRACKER");
-  //t.every(60000,tulis, (void*)2);
+  GPRS.print("AT+CNMI=2,2,0,0,0\r\n"); // Mengatur notifikasi pesan masuk
+  delay(1000);
 }
 
 void loop() {
-  //t.update();
-  GPRS.listen();
-  // put your main code here, to run repeatedly:
-  while(GPRS.available()>0){
-    String incoming=GPRS.readStringUntil('\n');
+  GPRS.listen(); // Mengaktifkan komunikasi dengan GPRS
+  
+  while (GPRS.available() > 0) {
+    String incoming = GPRS.readStringUntil('\n'); // Membaca pesan dari GPRS
     incoming.trim();
-    Serial.println("sms = "+incoming);
+    Serial.println("sms = " + incoming);
+    
+    // Mengekstrak nomor pengirim jika ada pesan masuk
     if (incoming.startsWith("+CMT:")) {
-      // Ekstrak nomor ponsel pengirim dari pesan SMS
       String senderNumber = extractPhoneNumber(incoming);
-      sementara=senderNumber;
-      // Tampilkan nomor ponsel pengirim
+      sementara = senderNumber;
       Serial.println("Nomor Pengirim: " + senderNumber);
     }
-    if(incoming.indexOf("LOKASI")>=0){ 
-    // Turn on relay and save current state
-    smartDelay(1000);
     
-    String pesan="https://maps.google.com/?q="+lati+","+longi;
-    sendSMS(sementara.c_str(), pesan.c_str());
-    delay(100);
-    GPRS.println("AT+CMGD=1,4");
-    tulis();
-    delay(1000);
+    // Jika pesan mengandung kata "LOKASI", kirim koordinat GPS
+    if (incoming.indexOf("LOKASI") >= 0) {
+      smartDelay(5000); // Mengambil data GPS terbaru
+      
+      String pesan = "https://maps.google.com/?q=" + lati + "," + longi;
+      sendSMS(sementara.c_str(), pesan.c_str()); // Mengirim SMS dengan lokasi
+      delay(100);
+      GPRS.println("AT+CMGD=1,4"); // Menghapus semua SMS di modul GPRS
+      delay(1000);
+    }
   }
-    if(incoming.indexOf("ON")>=0){ 
-    sendSMS(sementara.c_str(), "Kendaraan dinyalakan");
-    
-    delay(100);
-    GPRS.println("AT+CMGD=1,4");
-  }
-  if(incoming.indexOf("OFF")>=0){ 
-    sendSMS(sementara.c_str(), "Kendaraan dimatikan");
-    
-    delay(100);
-    GPRS.println("AT+CMGD=1,4");
-  }
-  }
-  //smartDelay(1000);
 }
 
+// Fungsi untuk mengirim SMS
 void sendSMS(const char* phoneNumber, const char* message) {
-  GPRS.println("AT+CMGF=1"); // Set mode teks untuk SMS
-  delay(1000);
+  GPRS.println("AT+CMGF=1"); // Mengatur SMS ke mode teks
+  delay(2000);
 
   GPRS.print("AT+CMGS=\"");
   GPRS.print(phoneNumber);
@@ -88,48 +73,32 @@ void sendSMS(const char* phoneNumber, const char* message) {
   delay(1000);
 
   GPRS.write(26); // Mengirim karakter CTRL+Z untuk mengakhiri SMS
-  delay(1000);
+  delay(5000);
 
-  Serial.println("SMS terkirim!");
+  Serial.println(message);
 }
+
+// Fungsi untuk mengekstrak nomor telepon dari pesan SMS
 String extractPhoneNumber(String sms) {
-  // Cari posisi awal dan akhir nomor ponsel dalam pesan SMS
   int firstQuote = sms.indexOf('"') + 1;
   int secondQuote = sms.indexOf('"', firstQuote);
-
-  // Ekstrak dan kembalikan nomor ponsel
   return sms.substring(firstQuote, secondQuote);
 }
-static void smartDelay(unsigned long ms)
-{
+
+// Fungsi untuk menunggu dan membaca data GPS dalam waktu tertentu
+static void smartDelay(unsigned long ms) {
   unsigned long start = millis();
-  do 
-  {
+  do {
     GPS.listen();
     delay(2);
-    while (GPS.available())
+    while (GPS.available()) {
       G.encode(GPS.read());
+    }
   } while (millis() - start < ms);
-  lati=String(G.location.lat(),8);
-  longi=String(G.location.lng(),6);
+  
+  lati = String(G.location.lat(), 8); // Mengambil data latitude
+  longi = String(G.location.lng(), 6); // Mengambil data longitude
+  
   Serial.println(lati);
   Serial.println(longi);
-}
-void tulis(){
-  //smartDelay(1000);
-  String data=lati+","+longi;
-  writeFile("log.txt",data);
-  Serial.println(data);
-}
-void writeFile(const char *filename, String data){
-  File file=SD.open(filename,FILE_WRITE);
-  if(file){
-    
-    file.println(data);
-    file.close();
-    Serial.println("Tersimpan");
-  }
-  else{
-    Serial.println("Error");
-  }
 }
