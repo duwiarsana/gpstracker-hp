@@ -54,10 +54,7 @@ Sebelum meng-compile kode, pastikan kamu sudah menginstal library berikut di **A
 1. **Perangkat menyala** dan mulai membaca data GPS.
 2. Saat menerima SMS dengan isi **"LOKASI"**, perangkat akan mengambil data koordinat dari GPS.
 3. Data latitude dan longitude akan diubah menjadi link Google Maps.
-4. SMS akan dikirim kembali ke pengirim dengan format:
-   ```
-   https://maps.google.com/?q=latitude,longitude
-   ```
+4. SMS akan dikirim kembali ke pengirim dengan format: https://maps.google.com/?q=latitude,longitude
 5. Nomor pengirim SMS akan disimpan sementara untuk membalas otomatis.
 6. Setelah mengirim SMS, perangkat menghapus pesan yang diterima agar memori tidak penuh.
 7. Jika ada **panggilan masuk**, perangkat akan **otomatis mengangkat pada dering ketiga**.
@@ -86,4 +83,12 @@ Proyek ini menggunakan lisensi MIT, yang berarti bebas digunakan, dimodifikasi, 
 ---
 
 🚀 Selamat mencoba! Jika ada pertanyaan atau ingin menggunakan PCB khusus ini, silakan hubungi saya.
+
+## 💖 Dukung Pengembangan Proyek Ini
+
+Jika kamu merasa proyek ini bermanfaat dan ingin mendukung pengembangan lebih lanjut, kamu bisa memberikan **donasi melalui Saweria**:
+
+🔗 [https://saweria.co/duwiarsana](https://saweria.co/duwiarsana)  
+
+Terima kasih atas dukungannya! 🤗
 
