@@ -15,6 +15,9 @@ Desain perangkat ini dibuat menggunakan **Eagle PCB** dan terdiri dari dua file 
 - **Schematic:** [`GPS TRACKER MINI.sch`](./GPS%20TRACKER%20MINI.sch)
 - **PCB Layout:** [`GPS TRACKER MINI.brd`](./GPS%20TRACKER%20MINI.brd)
 
+## Skema Kalau Pakai Arduino Uno dan GPS NEO
+![GPS Tracker](./images/gps_tracker.jpg)
+
 ## Bill of Materials (BOM)
 Berikut adalah daftar komponen utama yang digunakan dalam proyek ini:
 
