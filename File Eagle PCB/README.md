@@ -1,4 +1,4 @@
-# GPS Tracker Mini
+# README FILE EAGLE PCB GPS Tracker Mini
 
 ## Deskripsi Proyek
 GPS Tracker Mini adalah proyek pelacak GPS berbasis **ATmega328P**, **SIM800C**, dan **Quectel L80 GNSS**. Proyek ini memungkinkan pelacakan lokasi secara real-time dengan komunikasi GSM/GPRS.
